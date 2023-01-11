@@ -3,10 +3,10 @@
 .idea
 *.log
 *.tgz
+data
 coverage
 dist
 lib-cov
 logs
 node_modules
 temp
-data
