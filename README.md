@@ -1,6 +1,6 @@
 # Stable Diffusion Oicq
 
-> A qq chat bot generate image from message based on stable diffusion models and oicq.
+> A qq chat bot generate image from message based on stable diffusion webui Api and oicq.
 
 ## License
 
