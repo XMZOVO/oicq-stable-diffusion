@@ -7,9 +7,11 @@ importers:
       '@antfu/eslint-config': ^0.27.0
       '@antfu/ni': ^0.18.0
       '@antfu/utils': ^0.5.2
+      '@types/crypto-js': ^4.1.1
       '@types/node': ^18.7.18
       axios: ^1.2.2
       bumpp: ^8.2.1
+      crypto-js: ^4.1.1
       eslint: ^8.23.1
       esno: ^0.16.3
       google-translate-api-x: ^10.5.2
@@ -21,7 +23,9 @@ importers:
       vite: ^3.1.2
       vitest: ^0.23.4
     dependencies:
+      '@types/crypto-js': 4.1.1
       axios: 1.2.2
+      crypto-js: 4.1.1
       google-translate-api-x: 10.5.2
       oicq: 2.3.1
     devDependencies:
@@ -582,6 +586,10 @@ packages:
     resolution: {integrity: sha512-hC7OMnszpxhZPduX+m+nrx+uFoLkWOMiR4oa/AZF3MuSETYTZmFfJAHqZEM8MVlvfG7BEUcgvtwoCTxBp6hm3g==}
     dev: true
 
+  /@types/crypto-js/4.1.1:
+    resolution: {integrity: sha512-BG7fQKZ689HIoc5h+6D2Dgq1fABRa0RbBWKBd9SP/MVRVXROflpm5fhwyATX5duFmbStzyzyycPB8qUYKDH3NA==}
+    dev: false
+
   /@types/estree/0.0.39:
     resolution: {integrity: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==}
     dev: true
@@ -1050,6 +1058,10 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
     dev: true
+
+  /crypto-js/4.1.1:
+    resolution: {integrity: sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==}
+    dev: false
 
   /cssesc/3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}

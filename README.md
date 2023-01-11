@@ -4,4 +4,4 @@
 
 ## License
 
-[MIT](./LICENSE) License © 2022 [XMZOVO](https://github.com/XMZOVO)
+[MIT](./LICENSE) License © 2023 [XMZOVO](https://github.com/XMZOVO)

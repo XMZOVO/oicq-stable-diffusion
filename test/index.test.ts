@@ -1,7 +1,10 @@
-import { describe, expect, it } from 'vitest'
+import { describe, it } from 'vitest'
 
 describe('should', () => {
   it('exported', () => {
-    expect(1).toEqual(1)
+    const str = 'sdTrans -hd asc'
+    const pattern = /^(sdAI|sdTrans)\s+((?:-\w+\s?)*)?(.+)?$/
+    const match = pattern.exec(str)
+    console.log(match)
   })
 })
