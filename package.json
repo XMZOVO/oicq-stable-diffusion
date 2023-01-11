@@ -4,15 +4,8 @@
   "version": "0.0.0",
   "packageManager": "pnpm@7.12.0",
   "description": "",
-  "author": "Anthony Fu <anthonyfu117@hotmail.com>",
+  "author": "XMZOVO <2980999208@qq.com>",
   "license": "MIT",
-  "funding": "https://github.com/sponsors/antfu",
-  "homepage": "https://github.com/antfu/pkg-name#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/antfu/pkg-name.git"
-  },
-  "bugs": "https://github.com/antfu/pkg-name/issues",
   "keywords": [],
   "sideEffects": false,
   "exports": {
