@@ -4,6 +4,8 @@ import { createClient } from 'oicq'
 import axios from 'axios'
 import sha256 from 'crypto-js/sha256'
 import { encode } from 'node-base64-image'
+import type { ProbeResult } from 'probe-image-size'
+import probe from 'probe-image-size'
 
 const account = 3203223297
 const client = createClient(account)
@@ -14,6 +16,7 @@ const options = {
     'User-Agent': 'my-app',
   },
 }
+const MAX_LENGTH = 720
 interface Result {
   prefix?: string
   params: Array<string>
@@ -42,7 +45,7 @@ client.on('message.group', async (e) => {
       const group = client.pickGroup((e as GroupMessageEvent).group.gid)
       group.recallMsg(messageList[0])
       messageList.shift()
-    }, 15000)
+    }, 60000)
   }
 })
 
@@ -57,8 +60,13 @@ async function reply(e: PrivateMessageEvent | GroupMessageEvent) {
     let base64
     if (e.message[1] && e.message[1].type === 'image' && e.message[1].url) {
       e.reply(`妈妈正在生成图片：${result.remaining}`, true)
-      const image = await encode(e.message[1].url, options) as string
-      base64 = await generateFromImg(result.remaining, result.params, image)
+      try {
+        base64 = await generateFromImg(result.remaining, result.params, e.message[1].url)
+      }
+      catch (err) {
+        e.reply('生成失败，可能是因为使用的转发图片')
+        return
+      }
     }
     else {
       e.reply('妈妈生不动了', true)
@@ -122,6 +130,7 @@ function truncate(q: string) {
   return q.substring(0, 10) + len + q.substring(len - 10, len)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function generate(prompt: string, _: Array<string>): Promise<string> {
   const res = await axios.post('http://127.0.0.1:7861/sdapi/v1/txt2img', {
     steps: '30',
@@ -143,18 +152,21 @@ async function generate(prompt: string, _: Array<string>): Promise<string> {
   return res.data.images[0]
 }
 
-async function generateFromImg(prompt: string, params: Array<string>, img64: string) {
+async function generateFromImg(prompt: string, params: Array<string>, imgurl: string) {
+  const image64 = await encode(imgurl, options) as string
+  const img = await probe(imgurl)
+  const resImg = resizeImg(img)
   const res = await axios.post('http://127.0.0.1:7861/sdapi/v1/img2img', {
-    steps: '30',
-    width: 410,
-    height: 720,
+    steps: '50',
+    width: resImg.width,
+    height: resImg.height,
     resize_mode: 1,
     cfg_scale: 21,
     denoising_strength: getParamsValue(params, '-den') !== undefined ? Math.min(Math.max(parseFloat(getParamsValue(params, '-den')!), 0), 1) : 0.64,
     sampler_index: 'DDIM',
     prompt: `${prompt}`,
     init_images: [
-      img64,
+      image64,
     ],
     negative_prompt:
           `(worst quality, low quality:1.4), logo, text, monochrome,
@@ -172,3 +184,27 @@ function getParamsValue(params: Array<string>, prifix: string) {
     return value !== '' ? value : undefined// "1" or "2"
   }
 }
+
+function resizeImg(img: ProbeResult) {
+  let width = img.width
+  let height = img.height
+  let ratio
+  if (width > height) {
+    if (width > MAX_LENGTH) {
+      ratio = MAX_LENGTH / width
+      width = MAX_LENGTH
+      height = height * ratio
+    }
+  }
+  else {
+    if (height > MAX_LENGTH) {
+      ratio = MAX_LENGTH / height
+      height = MAX_LENGTH
+      width = width * ratio
+    }
+  }
+  img.width = width
+  img.height = height
+  return img
+}
+

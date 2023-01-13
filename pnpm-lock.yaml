@@ -9,6 +9,7 @@ importers:
       '@antfu/utils': ^0.5.2
       '@types/crypto-js': ^4.1.1
       '@types/node': ^18.7.18
+      '@types/probe-image-size': ^7.2.0
       axios: ^1.2.2
       bumpp: ^8.2.1
       crypto-js: ^4.1.1
@@ -18,6 +19,7 @@ importers:
       node-base64-image: ^2.0.4
       oicq: ^2.3.1
       pnpm: ^7.12.0
+      probe-image-size: ^7.2.3
       rimraf: ^3.0.2
       typescript: ^4.8.3
       unbuild: ^0.8.11
@@ -25,11 +27,13 @@ importers:
       vitest: ^0.23.4
     dependencies:
       '@types/crypto-js': 4.1.1
+      '@types/probe-image-size': 7.2.0
       axios: 1.2.2
       crypto-js: 4.1.1
       google-translate-api-x: 10.5.2
       node-base64-image: 2.0.4
       oicq: 2.3.1
+      probe-image-size: 7.2.3
     devDependencies:
       '@antfu/eslint-config': 0.27.0_irgkl5vooow2ydyo6aokmferha
       '@antfu/ni': 0.18.0
@@ -614,13 +618,25 @@ packages:
       '@types/unist': 2.0.6
     dev: true
 
+  /@types/needle/3.2.0:
+    resolution: {integrity: sha512-6XzvzEyJ2ozFNfPajFmqH9JOt0Hp+9TawaYpJT59iIP/zR0U37cfWCRwosyIeEBBZBi021Osq4jGAD3AOju5fg==}
+    dependencies:
+      '@types/node': 18.7.18
+    dev: false
+
   /@types/node/18.7.18:
     resolution: {integrity: sha512-m+6nTEOadJZuTPkKR/SYK3A2d7FZrgElol9UP1Kae90VVU4a6mxnPuLiIW1m4Cq4gZ/nWb9GrdVXJCoCazDAbg==}
-    dev: true
 
   /@types/normalize-package-data/2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
     dev: true
+
+  /@types/probe-image-size/7.2.0:
+    resolution: {integrity: sha512-R5H3vw62gHNHrn+JGZbKejb+Z2D/6E5UNVlhCzIaBBLroMQMOFqy5Pap2gM+ZZHdqBtVU0/cx/M6to+mOJcoew==}
+    dependencies:
+      '@types/needle': 3.2.0
+      '@types/node': 18.7.18
+    dev: false
 
   /@types/resolve/1.17.1:
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
