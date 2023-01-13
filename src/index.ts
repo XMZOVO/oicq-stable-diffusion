@@ -98,7 +98,7 @@ async function processMessage(message: string): Promise<Result> {
 
 async function translate(q: string): Promise<string> {
   const appKey = '5dc121139f08a9d4'
-  const key = 'S3M5eTuloS4XH7njeyZcM0X7JcCsAcaU'// 注意：暴露appSecret，有被盗用造成损失的风险
+  const key = ''// 替换为你的有道翻译api key
   const salt = (new Date()).getTime()
   const curtime = Math.round(new Date().getTime() / 1000)
   const from = 'zh-CHS'
