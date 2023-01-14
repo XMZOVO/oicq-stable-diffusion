@@ -7,9 +7,9 @@ import { encode } from 'node-base64-image'
 import type { ProbeResult } from 'probe-image-size'
 import probe from 'probe-image-size'
 
-const account = 3203223297
+const account = 3558195590
 const client = createClient(account)
-const messageList = [] as string[]
+// const messageList = [] as string[]
 const options = {
   string: true,
   headers: {
@@ -35,31 +35,31 @@ client
   .login()
 
 client.on('message.group', async (e) => {
-  console.log(e.raw_message)
-  const rep = await reply(e)
-  if (rep !== undefined) {
-    messageList.push(rep.message_id)
-    setTimeout(() => {
-      if (messageList.length === 0)
-        return
-      const group = client.pickGroup((e as GroupMessageEvent).group.gid)
-      group.recallMsg(messageList[0])
-      messageList.shift()
-    }, 60000)
-  }
+  await reply(e)
+  // if (rep !== undefined) {
+  //   messageList.push(rep.message_id)
+  //   setTimeout(() => {
+  //     if (messageList.length === 0)
+  //       return
+  //     const group = client.pickGroup((e as GroupMessageEvent).group.gid)
+  //     group.recallMsg(messageList[0])
+  //     messageList.shift()
+  //   }, 60000)
+  // }
 })
 
-client.on('message.private', async (e) => {
-  console.log(e.raw_message)
-  reply(e)
+client.on('message.private', async (_) => {
+  // console.log(e.raw_message)
+  // reply(e)
 })
 
 async function reply(e: PrivateMessageEvent | GroupMessageEvent) {
   const result = await processMessage(e.raw_message)
   if (result.remaining) {
     let base64
+    console.log(result.remaining)
     if (e.message[1] && e.message[1].type === 'image' && e.message[1].url) {
-      e.reply(`妈妈正在生成图片：${result.remaining}`, true)
+      e.reply(`妈妈正在以图生图：${result.remaining}`, true)
       try {
         base64 = await generateFromImg(result.remaining, result.params, e.message[1].url)
       }
@@ -69,8 +69,15 @@ async function reply(e: PrivateMessageEvent | GroupMessageEvent) {
       }
     }
     else {
-      e.reply('妈妈生不动了', true)
-      return
+      try {
+        e.reply(`妈妈正在生成图片：${result.remaining}`, true)
+
+        base64 = await generate(result.remaining, result.params)
+      }
+      catch {
+        e.reply('生成失败，妈妈也不知道为什么')
+        return
+      }
     }
     // base64 = await generate(result.remaining, result.params)
 
@@ -86,19 +93,19 @@ async function processMessage(message: string): Promise<Result> {
   const result: Result = { params: [] }
   const string = message
 
-  const pattern = /^(sdAI|sdTrans)\s+((?:-[\w\.]+\s?)*)?([^\[]+)?/
+  const pattern = /^(sdA|sdT)\s+((?:-[\w\.]+\s?)*)?([^\[]+)?/
   const match = pattern.exec(string)
-  if (match) {
+  if (match && match[3]) {
     result.prefix = match[1]
     result.params = match[2] ? match[2].split(' ') : []
-    result.remaining = match[1] === 'sdAI' ? match[3] : await translate(match[3])
+    result.remaining = match[1] === 'sdA' ? match[3] : await translate(match[3])
   }
   return result
 }
 
 async function translate(q: string): Promise<string> {
   const appKey = '5dc121139f08a9d4'
-  const key = ''// 替换为你的有道翻译api key
+  const key = 'S3M5eTuloS4XH7njeyZcM0X7JcCsAcaU'// 替换为你的有道api key
   const salt = (new Date()).getTime()
   const curtime = Math.round(new Date().getTime() / 1000)
   const from = 'zh-CHS'
@@ -130,24 +137,22 @@ function truncate(q: string) {
   return q.substring(0, 10) + len + q.substring(len - 10, len)
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function generate(prompt: string, _: Array<string>): Promise<string> {
   const res = await axios.post('http://127.0.0.1:7861/sdapi/v1/txt2img', {
-    steps: '30',
+    steps: '20',
     width: 512,
     height: 640,
-    cfg_scale: 10,
-    sampler_index: 'DDIM',
-    prompt: `${prompt}`,
+    cfg_scale: 8,
+    sampler_index: 'DPM++ SDE Karras',
+    prompt: `masterpiece, best quality, ultra-detailed, illustration,${prompt}`,
+    enable_hr: true,
+    denoising_strength: 0.5,
+    hr_scale: 1.8,
+    hr_second_pass_steps: 20,
+    hr_upscaler: 'Latent (nearest-exact)',
     negative_prompt:
-          `sketch, 3d, lowres, bad anatomy, bad hands, text, error, 
-          missing fingers, extra digit, fewer digits, cropped, 
-          worst quality, low quality, normal quality, jpeg artifacts, 
-          signature, watermark, username, (blurry), artist name, monochrome,
-           simple background, head out of frame, face, portrait, torso, 
-           (out of focus), soft focus, feet out of frame, lower body, 
-           upper body, close-up, extra breasts, umbrella,
-          `,
+    `nsfw,(worst quality, low quality:1.4),logo,text
+    `,
   })
   return res.data.images[0]
 }
@@ -162,15 +167,14 @@ async function generateFromImg(prompt: string, params: Array<string>, imgurl: st
     height: resImg.height,
     resize_mode: 1,
     cfg_scale: 21,
-    denoising_strength: getParamsValue(params, '-den') !== undefined ? Math.min(Math.max(parseFloat(getParamsValue(params, '-den')!), 0), 1) : 0.64,
-    sampler_index: 'DDIM',
+    denoising_strength: getParamsValue(params, '-den') !== undefined ? Math.min(Math.max(parseFloat(getParamsValue(params, '-den')!), 0), 1) : 0.55,
+    sampler_index: 'DPM++ SDE Karras',
     prompt: `${prompt}`,
     init_images: [
       image64,
     ],
     negative_prompt:
-          `(worst quality, low quality:1.4), logo, text, monochrome,
-          (((pornographic))),((asshole)),(vaginal),(((pussy))),(((penis))),(((nude))),(((anus)))
+          `nsfw,(worst quality, low quality:1.4),logo,text
           `,
   })
   return res.data.images[0]
